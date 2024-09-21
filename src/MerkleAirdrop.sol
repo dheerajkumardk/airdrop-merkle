@@ -35,4 +35,11 @@ contract MerkleAirdrop {
         i_airdropToken.safeTransfer(account, amount);
     }
     
+    function getAirdropToken() external view returns (IERC20) {
+        return i_airdropToken;
+    }
+
+    function getMerkleRoot() external view returns (bytes32) {
+        return i_merkleRoot;
+    }
 }
