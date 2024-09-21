@@ -12,10 +12,13 @@ contract MerkleAirdropTest is Test {
     MerkleAirdrop public airdrop;
     bytes32 public ROOT = 0xbc86e6904fe9bb5c8709a9d4af93060f21ce2a743c328bfdbeb644ff3a8a7a03;
     bytes32[] public PROOF = [
-        bytes32(0x0c21609b1d3b1d959879c69a974ef7e7c440215fb365342052d02b2be9207de1),
+        bytes32(0x0fd7c981d39bece61f7499702bf59b3114a90e66b51ba2c53abdf7b62986c00a),
         bytes32(0xa785c9730cd199c3ef8b27141d63009135c49f0c083e74fb1ffeb15b2a504de9)
     ];
     address alice;
+    uint256 alicePvtKey;
+    address aliceKaPA;
+
     uint256 CLAIM_AMOUNT = 25 ether;
     uint256 TOTAL_AIRDROP_AMOUNT = 4 * CLAIM_AMOUNT;
 
@@ -23,18 +26,21 @@ contract MerkleAirdropTest is Test {
         DeployAirdrop deployer = new DeployAirdrop();
         (artihc, airdrop) = deployer.run();
 
-        alice = makeAddr("alice");
-        console.log("alice: ", makeAddr("alice"));
-        console.log("bob: ", makeAddr("bob"));
-        console.log("charlie: ", makeAddr("charlie"));
-        console.log("dave: ", makeAddr("dave"));
+        (alice, alicePvtKey) = makeAddrAndKey("alice");
+        aliceKaPA = makeAddr("alice ka PA");
+        console.log(alicePvtKey);
     }
 
     function testUserCanClaim() public {
         uint256 startingBal = artihc.balanceOf(alice);
 
-        vm.prank(alice);
-        airdrop.claim(alice, CLAIM_AMOUNT, PROOF);
+        bytes32 message = airdrop.getMessageHash(alice, CLAIM_AMOUNT);
+
+        // sign the txn using alice pvt key
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(alicePvtKey, message);
+
+        vm.prank(aliceKaPA);
+        airdrop.claim(alice, CLAIM_AMOUNT, PROOF, v, r, s);
 
         uint256 endingBal = artihc.balanceOf(alice);
 

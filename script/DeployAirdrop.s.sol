@@ -8,7 +8,7 @@ import {ArtihcToken} from "../src/ArtihcToken.sol";
 import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 contract DeployAirdrop is Script {
-    bytes32 private s_merkleRoot = 0xbc86e6904fe9bb5c8709a9d4af93060f21ce2a743c328bfdbeb644ff3a8a7a03;
+    bytes32 private s_merkleRoot = 0x38594d4d7086ecf96eb52f13c4535e95ce7b41ef6218aae903e367deffd8b56f;
     uint256 private s_totalAirdropAmount = 100 ether;
 
     function run() external returns (ArtihcToken, MerkleAirdrop) {
